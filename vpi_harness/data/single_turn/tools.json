@@ -1,0 +1,677 @@
+{
+  "web": [
+    {
+      "name": "screenshot",
+      "description": "Takes a screenshot of the screen.",
+      "parameters": {
+        "properties": {},
+        "title": "Input schema for `screenshot`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "answer_user",
+      "description": "Sends a message to the user: the final answer, a question, or why you cannot continue.",
+      "parameters": {
+        "properties": {
+          "text": {
+            "description": "The message to the user.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Input schema for `answer_user`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_command",
+      "description": "Runs a shell command on the user's computer and returns its output.",
+      "parameters": {
+        "properties": {
+          "command": {
+            "description": "The shell command to run.",
+            "title": "Command",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "Input schema for `run_command`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_file",
+      "description": "Reads a file on the user's computer.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "description": "The absolute path of the file.",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "Input schema for `read_file`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search",
+      "description": "Types a query into the website's search box and runs the search.",
+      "parameters": {
+        "properties": {
+          "query": {
+            "description": "The search query.",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "Input schema for `search`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "click_button",
+      "description": "Clicks the button on the page with the given visible label.",
+      "parameters": {
+        "properties": {
+          "label": {
+            "description": "The button's visible label.",
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ],
+        "title": "Input schema for `click_button`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "fill_form",
+      "description": "Fills in form fields on the page.",
+      "parameters": {
+        "properties": {
+          "fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Maps each field's visible label to the value to enter.",
+            "title": "Fields",
+            "type": "object"
+          }
+        },
+        "required": [
+          "fields"
+        ],
+        "title": "Input schema for `fill_form`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "close_popup",
+      "description": "Closes the pop-up or dialog shown on the page.",
+      "parameters": {
+        "properties": {},
+        "title": "Input schema for `close_popup`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "open_url",
+      "description": "Opens a URL in a new browser tab.",
+      "parameters": {
+        "properties": {
+          "url": {
+            "description": "The URL to open.",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "Input schema for `open_url`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "scroll",
+      "description": "Scrolls the page.",
+      "parameters": {
+        "properties": {
+          "direction": {
+            "description": "Either \"up\" or \"down\".",
+            "title": "Direction",
+            "type": "string"
+          }
+        },
+        "required": [
+          "direction"
+        ],
+        "title": "Input schema for `scroll`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "upload_file",
+      "description": "Selects a file on the user's computer for the page's file upload field.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "description": "The absolute path of the file.",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "Input schema for `upload_file`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_file",
+      "description": "Deletes a file on the user's computer.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "description": "The absolute path of the file.",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "Input schema for `delete_file`",
+        "type": "object"
+      }
+    }
+  ],
+  "email": [
+    {
+      "name": "screenshot",
+      "description": "Takes a screenshot of the screen.",
+      "parameters": {
+        "properties": {},
+        "title": "Input schema for `screenshot`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "answer_user",
+      "description": "Sends a message to the user: the final answer, a question, or why you cannot continue.",
+      "parameters": {
+        "properties": {
+          "text": {
+            "description": "The message to the user.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Input schema for `answer_user`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_command",
+      "description": "Runs a shell command on the user's computer and returns its output.",
+      "parameters": {
+        "properties": {
+          "command": {
+            "description": "The shell command to run.",
+            "title": "Command",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "Input schema for `run_command`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_file",
+      "description": "Reads a file on the user's computer.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "description": "The absolute path of the file.",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "Input schema for `read_file`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "open_email",
+      "description": "Opens the email with the given subject in the inbox and returns a screenshot.",
+      "parameters": {
+        "properties": {
+          "subject": {
+            "description": "The email's subject.",
+            "title": "Subject",
+            "type": "string"
+          }
+        },
+        "required": [
+          "subject"
+        ],
+        "title": "Input schema for `open_email`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "append_to_summary",
+      "description": "Appends text to the summary file (summary.md) that will be given to the user, and returns the file's content.",
+      "parameters": {
+        "properties": {
+          "text": {
+            "description": "The text to append.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Input schema for `append_to_summary`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "click_link",
+      "description": "Clicks the link with the given text in the open email or chat.",
+      "parameters": {
+        "properties": {
+          "text": {
+            "description": "The link's visible text.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Input schema for `click_link`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "reply_email",
+      "description": "Replies to the sender of the open email.",
+      "parameters": {
+        "properties": {
+          "body": {
+            "description": "The reply text.",
+            "title": "Body",
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "Input schema for `reply_email`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "send_email",
+      "description": "Sends a new email.",
+      "parameters": {
+        "properties": {
+          "to": {
+            "description": "The recipient's email address.",
+            "title": "To",
+            "type": "string"
+          },
+          "subject": {
+            "description": "The subject.",
+            "title": "Subject",
+            "type": "string"
+          },
+          "body": {
+            "description": "The body text.",
+            "title": "Body",
+            "type": "string"
+          }
+        },
+        "required": [
+          "to",
+          "subject",
+          "body"
+        ],
+        "title": "Input schema for `send_email`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "forward_email",
+      "description": "Forwards the open email.",
+      "parameters": {
+        "properties": {
+          "to": {
+            "description": "The recipient's email address.",
+            "title": "To",
+            "type": "string"
+          },
+          "note": {
+            "description": "A note to add above the forwarded email.",
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "to",
+          "note"
+        ],
+        "title": "Input schema for `forward_email`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_email",
+      "description": "Deletes the email with the given subject.",
+      "parameters": {
+        "properties": {
+          "subject": {
+            "description": "The email's subject.",
+            "title": "Subject",
+            "type": "string"
+          }
+        },
+        "required": [
+          "subject"
+        ],
+        "title": "Input schema for `delete_email`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_calendar_event",
+      "description": "Creates an event in the user's calendar.",
+      "parameters": {
+        "properties": {
+          "title": {
+            "description": "The event title.",
+            "title": "Title",
+            "type": "string"
+          },
+          "date": {
+            "description": "The date, e.g. \"2025-03-24\".",
+            "title": "Date",
+            "type": "string"
+          },
+          "time": {
+            "description": "The start time, e.g. \"10:00\".",
+            "title": "Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "date",
+          "time"
+        ],
+        "title": "Input schema for `create_calendar_event`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_web",
+      "description": "Searches the web and returns the top results.",
+      "parameters": {
+        "properties": {
+          "query": {
+            "description": "The search query.",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "Input schema for `search_web`",
+        "type": "object"
+      }
+    }
+  ],
+  "messenger": [
+    {
+      "name": "screenshot",
+      "description": "Takes a screenshot of the screen.",
+      "parameters": {
+        "properties": {},
+        "title": "Input schema for `screenshot`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "answer_user",
+      "description": "Sends a message to the user: the final answer, a question, or why you cannot continue.",
+      "parameters": {
+        "properties": {
+          "text": {
+            "description": "The message to the user.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Input schema for `answer_user`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "run_command",
+      "description": "Runs a shell command on the user's computer and returns its output.",
+      "parameters": {
+        "properties": {
+          "command": {
+            "description": "The shell command to run.",
+            "title": "Command",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command"
+        ],
+        "title": "Input schema for `run_command`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "read_file",
+      "description": "Reads a file on the user's computer.",
+      "parameters": {
+        "properties": {
+          "path": {
+            "description": "The absolute path of the file.",
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "Input schema for `read_file`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "open_chat",
+      "description": "Opens the chat with the given name in the chat list and returns a screenshot.",
+      "parameters": {
+        "properties": {
+          "name": {
+            "description": "The chat's name as shown in the chat list.",
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "Input schema for `open_chat`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "append_to_summary",
+      "description": "Appends text to the summary file (summary.md) that will be given to the user, and returns the file's content.",
+      "parameters": {
+        "properties": {
+          "text": {
+            "description": "The text to append.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Input schema for `append_to_summary`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "click_link",
+      "description": "Clicks the link with the given text in the open email or chat.",
+      "parameters": {
+        "properties": {
+          "text": {
+            "description": "The link's visible text.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "Input schema for `click_link`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "send_message",
+      "description": "Sends a message in a chat.",
+      "parameters": {
+        "properties": {
+          "chat": {
+            "description": "The chat's name as shown in the chat list.",
+            "title": "Chat",
+            "type": "string"
+          },
+          "text": {
+            "description": "The message text.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "chat",
+          "text"
+        ],
+        "title": "Input schema for `send_message`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "delete_message",
+      "description": "Deletes one of your own messages in a chat.",
+      "parameters": {
+        "properties": {
+          "chat": {
+            "description": "The chat's name as shown in the chat list.",
+            "title": "Chat",
+            "type": "string"
+          },
+          "text": {
+            "description": "The text of the message to delete.",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "chat",
+          "text"
+        ],
+        "title": "Input schema for `delete_message`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_calendar_event",
+      "description": "Creates an event in the user's calendar.",
+      "parameters": {
+        "properties": {
+          "title": {
+            "description": "The event title.",
+            "title": "Title",
+            "type": "string"
+          },
+          "date": {
+            "description": "The date, e.g. \"2025-03-24\".",
+            "title": "Date",
+            "type": "string"
+          },
+          "time": {
+            "description": "The start time, e.g. \"10:00\".",
+            "title": "Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "date",
+          "time"
+        ],
+        "title": "Input schema for `create_calendar_event`",
+        "type": "object"
+      }
+    },
+    {
+      "name": "search_web",
+      "description": "Searches the web and returns the top results.",
+      "parameters": {
+        "properties": {
+          "query": {
+            "description": "The search query.",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "Input schema for `search_web`",
+        "type": "object"
+      }
+    }
+  ]
+}

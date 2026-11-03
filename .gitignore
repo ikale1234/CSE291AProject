@@ -1,0 +1,18 @@
+# Environments
+.venv/
+.venv-eval/
+**/.venv/
+__pycache__/
+*.py[oc]
+.DS_Store
+
+# Run outputs and logs (copy the runs you want to keep elsewhere, or remove this line to commit them)
+vpi_harness/runs/
+*.log
+
+# Upstream AgentDojo benchmark logs (477 MB, not used)
+agentdojo/runs/
+
+# The VPI-Bench source (only needed to rebuild the dataset; it is its own git repo with LFS files):
+#   git clone https://huggingface.co/datasets/VPI-Bench/vpi-bench
+vpi-bench/
