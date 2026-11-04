@@ -2,7 +2,7 @@
 
 CSE 291A project, Option 4: *Security–Performance Tradeoffs in Resource-Constrained Agents*.
 
-We test how a vision-language model acting as a computer-use agent responds to **visual prompt injections**: malicious instructions that appear *in a screenshot*, such as a pop-up, an email or a chat message. Phase 1 establishes a baseline with **Qwen3-VL-8B-Instruct** (bf16, served by vLLM) on paired clean and injected screenshots built from [VPI-Bench](https://huggingface.co/datasets/VPI-Bench/vpi-bench). The evaluation runs on [AgentDojo](https://github.com/ethz-spylab/agentdojo), which we extended to pass images to the model.
+We test how a vision-language model acting as a computer-use agent responds to **visual prompt injections**: malicious instructions that appear *in a screenshot*, such as a pop-up, an email or a chat message. Phase 1 establishes a baseline with **Qwen3-VL-8B-Instruct** (bf16 weights with an FP8 KV cache, served by vLLM) on paired clean and injected screenshots built from [VPI-Bench](https://huggingface.co/datasets/VPI-Bench/vpi-bench). The evaluation runs on [AgentDojo](https://github.com/ethz-spylab/agentdojo), which we extended to pass images to the model.
 
 For full background (design decisions, dataset details, known caveats and next steps), see [CLAUDE.md](CLAUDE.md).
 
@@ -10,27 +10,40 @@ For full background (design decisions, dataset details, known caveats and next s
 
 Target setup (not yet run there): g6.xlarge (NVIDIA L4, 24 GB), Deep Learning OSS NVIDIA Driver AMI with PyTorch and vLLM installed.
 
-**1. Start the vLLM server** in its own terminal or tmux pane:
+**1. Start the vLLM server.** Open a terminal window on the Ubuntu server, create a virtual environment for vLLM, install vLLM, and start the server:
 
 ```bash
-vllm serve Qwen/Qwen3-VL-8B-Instruct \
-  --max-model-len 16384 \
+sudo apt-get install -y python3-venv          # only if `python3 -m venv` fails
+python3 -m venv ~/vllm-env
+source ~/vllm-env/bin/activate
+pip install --upgrade pip
+pip install vllm                              # Qwen3-VL needs vLLM 0.11 or newer
+
+VLLM_USE_FLASHINFER_SAMPLER=0 vllm serve Qwen/Qwen3-VL-8B-Instruct \
+  --max-model-len 6144 \
+  --kv-cache-dtype fp8 \
+  --gpu-memory-utilization 0.95 \
   --limit-mm-per-prompt '{"image": 4}' \
-  --enable-auto-tool-choice --tool-call-parser hermes \
-  --port 8000 2>&1 | tee vllm_server.log
+  --enable-auto-tool-choice \
+  --tool-call-parser hermes \
+  --port 8000
 ```
 
-(`scripts/serve_vllm.sh` runs exactly this.)
+Leave this window open; the server is ready when it logs `Application startup complete`. The first start downloads about 17 GB of model weights. `bash scripts/serve_vllm.sh` runs the same `vllm serve` command and also saves its output to `vllm_server.log`.
 
-- **The two tool flags are recommended:** they let vLLM parse Qwen's tool calls itself. Without them the evaluation still works; it detects this and parses the tool calls from the reply text instead.
-- **Saving the log** (`tee vllm_server.log`) lets the summary report how much memory the model weights take.
-- **The first start downloads about 17 GB** of model weights.
+Notes on this command:
+- **Optional: save the server log.** Append `2>&1 | tee vllm_server.log` to the command. The summary then also reports how much memory the model weights take.
+- **The tool flags let vLLM parse Qwen's tool calls itself** (`--enable-auto-tool-choice --tool-call-parser hermes`). Without them the evaluation still works; it detects this and parses the tool calls from the reply text instead.
+- **The context limit is close to our largest prompts.** The email and messenger samples carry 3 screenshots and come to roughly 5,700 tokens including the 512-token reply budget, under the 6,144 limit. If the smoke test reports a context-length error, restart the server with `--max-model-len 8192`.
+- **The FP8 KV cache is part of the baseline configuration.** `--kv-cache-dtype fp8` stores the attention cache in 8 bits while the weights stay bf16. Use the same server settings for every run you compare, especially in the Phase 2 quantization study.
 
-**2. Run the evaluation** from the repo root, in a second terminal:
+**2. Run the evaluation.** Once the server is up, open a new terminal window on the server, go to the repo root, and run:
 
 ```bash
 bash scripts/run_baseline.sh
 ```
+
+This doesn't use the vLLM virtual environment; the script creates its own.
 
 The script does three things:
 1. Creates `.venv-eval`, an isolated Python environment for the evaluation client (it never touches vLLM's packages).
@@ -75,8 +88,8 @@ RUN_NAME=my_run PORT=8001 bash scripts/run_baseline.sh         # run name / serv
 
 ### Troubleshooting
 
-- **The smoke test fails with 400 errors:** check the vLLM terminal. A context-length error means `--max-model-len` is too small. The biggest prompts (email/messenger: 3 screenshots, tool schemas and history) need about 6k tokens.
-- **The server runs out of memory at startup:** add `--gpu-memory-utilization 0.85` or lower `--max-model-len`.
+- **The smoke test fails with 400 errors:** check the vLLM terminal. A context-length error means `--max-model-len` is too small: restart the server with `--max-model-len 8192`. The biggest prompts (email/messenger: 3 screenshots, tool schemas and history) need about 5,700 tokens including the reply budget.
+- **The server runs out of memory at startup:** lower `--gpu-memory-utilization` (e.g. 0.90) or `--max-model-len`.
 - **`python3 -m venv` fails:** run `sudo apt-get install -y python3-venv`, or set `PYTHON=/path/to/python3.10+`.
 - **Almost every outcome is `no_tool`:** the model isn't producing tool calls. Look at the `content` field in `results.jsonl`, and start the server with the two tool flags above.
 
