@@ -17,7 +17,7 @@ This is CSE 291A Option 4: *Security–Performance Tradeoffs in Resource-Constra
 
   Hold the harness, tools, tasks and scoring fixed. Record what each context policy keeps, and distinguish *removing the attack* from *resisting a visible attack*. Use fixed seeds or repeats, plus held-out pairs.
 
-**Our angle:** visual prompt injection against a computer-use agent. The injection arrives *in a screenshot* returned by a tool. The model is **Qwen3-VL-8B-Instruct** served by **vLLM** on an EC2 g6.xlarge (NVIDIA L4, 24 GB). The baseline is bf16 with uncompressed screenshots.
+**Our angle:** visual prompt injection against a computer-use agent. The injection arrives *in a screenshot* returned by a tool. The model is **Qwen3-VL-8B-Instruct** served by **vLLM** on an EC2 g6.xlarge (NVIDIA L4, 24 GB). The baseline is bf16 weights with an FP8 KV cache and uncompressed screenshots. The server command is in README.md (`--max-model-len 6144 --kv-cache-dtype fp8 --gpu-memory-utilization 0.95`, Hermes tool parsing); keep it identical across runs you compare.
 
 ## What the evaluation does
 
