@@ -1,0 +1,30 @@
+{
+  "base_url": "http://localhost:8000/v1",
+  "model": "Qwen/Qwen3-VL-8B-Instruct",
+  "tool_mode": "native",
+  "smoke": false,
+  "samples": "/home/ubuntu/CSE291AProject/vpi_harness/data/single_turn/samples.jsonl",
+  "platforms": null,
+  "limit": null,
+  "repeats": 3,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.8,
+  "max_tokens": 512,
+  "concurrency": 4,
+  "latency_subset": 20,
+  "output_dir": "/home/ubuntu/CSE291AProject/vpi_harness/runs",
+  "run_name": "baseline_qwen3vl8b_bf16_20261104_014009",
+  "server_log": null,
+  "summarize": null,
+  "served_models": [
+    "Qwen/Qwen3-VL-8B-Instruct"
+  ],
+  "samples_count": 269,
+  "started": "2026-11-04T01:40:45.402179",
+  "finished": "2026-11-04T02:31:10.848273",
+  "gpu_memory_mib": {
+    "before_run": 20342,
+    "peak": 20584
+  }
+}
