@@ -12,8 +12,11 @@ Output in vpi_harness/data/single_turn/: samples.jsonl, tools.json; session imag
 
 Usage (from the project root):
     agentdojo/.venv/bin/python vpi_harness/build_single_turn.py
+    agentdojo/.venv/bin/python vpi_harness/build_single_turn.py --rules-only   # update the scoring rules in
+        samples.jsonl from session_content.py, without re-rendering (the images stay byte-identical)
 """
 
+import argparse
 import copy
 import json
 from urllib.parse import parse_qs, urlsplit
@@ -30,9 +33,9 @@ from session_content import (
     MESSENGER_SESSIONS,
     MESSENGER_SUMMARY_KEYWORDS,
     SUMMARIES,
-    WEB_ATTACK,
     WEB_DISMISS,
     WEB_GOAL,
+    web_attack_rules,
 )
 from single_turn_tools import FUNCTIONS, tool_schemas
 from vpi_suite import POPUP_PLATFORMS, TESTCASES_DIR
@@ -95,12 +98,16 @@ def _example_call(rule: dict) -> FunctionCall:
     """A call that satisfies `rule`, with placeholder values for the other arguments."""
     function = next(f for f in FUNCTIONS["email"] + FUNCTIONS["messenger"] + FUNCTIONS["web"] if f.name == rule["tool"])
     args = {name: "example" for name in function.parameters.model_json_schema().get("properties", {})}
-    if rule.get("arg"):
+    if rule.get("arg") and rule.get("keyword_groups"):
         keywords = [group[0].rstrip("*") for group in rule["keyword_groups"][: rule.get("min_groups", 1)]]
         args[rule["arg"]] = " ".join(keywords)
     if rule["tool"] == "fill_form":
-        args["fields"] = {"Email": "example"}
+        args["fields"] = {"Field": args["fields"]}
     return FunctionCall(function=rule["tool"], args=args)
+
+
+def _web_rules(platform: str, attack_targets: list[dict]) -> dict[str, list[dict]]:
+    return {"goal": WEB_GOAL[platform], "dismiss": WEB_DISMISS, "attack": web_attack_rules(attack_targets)}
 
 
 def _testcases():
@@ -115,8 +122,8 @@ def _web_samples() -> list[Sample]:
         platform = pair["platform"]
         if platform not in POPUP_PLATFORMS:
             continue
-        rules = {"goal": WEB_GOAL[platform], "dismiss": WEB_DISMISS, "attack": WEB_ATTACK}
         injected = pair["injected"]
+        rules = _web_rules(platform, injected["attack_targets"])
         attack_label = injected["attack_targets"][-1]["label"]
         samples.append(
             Sample(
@@ -292,9 +299,32 @@ def _check(sample: Sample) -> None:
     offered = {f.name for f in FUNCTIONS[sample.toolset]}
     for step in [*sample.history, Step(call=sample.final_call, result_text="")]:
         assert step.call.function in offered, (sample.sample_id, step.call.function)
-    for expected, call in sample.reference_calls.items():
+    examples = [
+        (outcome, _example_call(rule)) for outcome in ("goal", "dismiss", "attack") for rule in sample.rules[outcome]
+    ]
+    for expected, call in [*sample.reference_calls.items(), *examples]:
         outcome = classify([call], sample.rules, offered)
         assert outcome == expected, (sample.sample_id, expected, outcome, call)
+
+
+def update_rules() -> list[Sample]:
+    """Recomputes each sample's rules from session_content.py and re-checks them, keeping everything else."""
+    path = OUTPUT_DIR / "samples.jsonl"
+    samples = [Sample.model_validate_json(line) for line in path.read_text().splitlines() if line.strip()]
+    for sample in samples:
+        config_id = sample.sample_id.split("__", 1)[1]
+        if sample.platform in POPUP_PLATFORMS:
+            sample.rules = _web_rules(sample.platform, [t.model_dump() for t in sample.injected.attack_targets])
+        elif sample.platform == "email":
+            content = EMAIL_SESSIONS[config_id]
+            sample.rules = _session_rules(content["summary_keywords"], content["attack"])
+        else:
+            sample.rules = _session_rules(MESSENGER_SUMMARY_KEYWORDS, MESSENGER_SESSIONS[config_id]["attack"])
+        _check(sample)
+    with path.open("w") as f:
+        for sample in samples:
+            f.write(sample.model_dump_json() + "\n")
+    return samples
 
 
 def build() -> list[Sample]:
@@ -329,7 +359,9 @@ def build() -> list[Sample]:
 
 
 if __name__ == "__main__":
-    samples = build()
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--rules-only", action="store_true")
+    samples = update_rules() if parser.parse_args().rules_only else build()
     counts: dict[str, int] = {}
     for sample in samples:
         counts[sample.platform] = counts.get(sample.platform, 0) + 1
