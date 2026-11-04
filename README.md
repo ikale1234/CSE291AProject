@@ -8,7 +8,7 @@ We test how a vision-language model acting as a computer-use agent responds to *
 
 ## Run the baseline on EC2
 
-Target setup (not yet run there): g6.xlarge (NVIDIA L4, 24 GB), Deep Learning OSS NVIDIA Driver AMI with PyTorch and vLLM installed.
+Target setup: g6.xlarge (NVIDIA L4, 24 GB), Deep Learning OSS NVIDIA Driver AMI with PyTorch and vLLM installed.
 
 **1. Start the vLLM server.** Open a terminal window on the Ubuntu server, create a virtual environment for vLLM, install vLLM, and start the server:
 
